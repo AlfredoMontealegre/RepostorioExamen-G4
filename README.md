@@ -1,2 +1,5 @@
-# RepostorioExamen-G4
-Examen ICE de PAE - Grupo 4
+# Integrantes
+- Román Mejia
+- Cristopher Santana
+- Alfredo Montealegre
+- Davis Rivera
