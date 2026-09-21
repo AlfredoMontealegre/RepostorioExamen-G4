@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane style="-fx-background-color: #f6f7fb;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.reservas.controller.ReservationController">
+
+    <top>
+        <VBox spacing="4" style="-fx-background-color: white;">
+            <padding>
+                <Insets bottom="18" left="24" right="24" top="22" />
+            </padding>
+            <Label style="-fx-font-size: 25px; -fx-font-weight: bold;" text="SISTEMA DE RESERVAS">
+            <font>
+               <Font name="Bodoni MT Condensed Italic" size="10.0" />
+            </font></Label>
+            <Label style="-fx-text-fill: #5f6368; -fx-font-size: 13px;" text="Registro para clientes y sus seleccione" />
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="14">
+            <padding>
+                <Insets bottom="24" left="24" right="24" top="18" />
+            </padding>
+
+            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 18; -fx-background-radius: 8;">
+                <Label style="-fx-font-size: 17px; -fx-font-weight: bold;" text="Datos de la reserva" />
+
+                <GridPane hgap="12" vgap="12">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="90" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                        <ColumnConstraints minWidth="90" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                    </columnConstraints>
+
+                    <Label text="Cliente:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <TextField fx:id="clientField" promptText="Nombre del cliente" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                    <Label text="Fecha:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                    <DatePicker fx:id="datePicker" maxWidth="Infinity" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+
+                    <Label text="Hora:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <TextField fx:id="timeField" promptText="Hora:Minutos" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                    <Label text="Servicio:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                    <ComboBox fx:id="serviceComboBox" maxWidth="Infinity" promptText="Seleccionar servicio" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+
+                    <Label text="Estado:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                    <ComboBox fx:id="statusComboBox" maxWidth="Infinity" promptText="Seleccionar estado" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+               </rowConstraints>
+                </GridPane>
+
+                <HBox spacing="8">
+                    <Button fx:id="saveButton" onAction="#handleSave" text="Guardar" />
+                    <Button fx:id="updateButton" onAction="#handleUpdate" text="Actualizar" />
+                    <Button fx:id="deleteButton" onAction="#handleDelete" text="Eliminar" />
+                    <Button fx:id="clearButton" onAction="#handleClear" text="Limpiar" />
+                    <Label fx:id="messageLabel" style="-fx-text-fill: #5f6368; -fx-padding: 6 0 0 12;" text="" HBox.hgrow="ALWAYS" />
+                </HBox>
+            </VBox>
+
+            <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 18; -fx-background-radius: 8;" VBox.vgrow="ALWAYS">
+                <Label style="-fx-font-size: 17px; -fx-font-weight: bold;" text="Reservas registradas" />
+
+                <HBox spacing="10">
+                    <TextField fx:id="searchField" promptText="Buscar por cliente..." HBox.hgrow="ALWAYS" />
+                    <Button onAction="#handleClearSearch" text="Limpiar búsqueda" />
+                </HBox>
+
+                <Separator />
+
+                <TableView fx:id="reservationTable" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="idColumn" prefWidth="60" text="ID" />
+                        <TableColumn fx:id="clientColumn" prefWidth="220" text="Cliente" />
+                        <TableColumn fx:id="dateColumn" prefWidth="120" text="Fecha" />
+                        <TableColumn fx:id="timeColumn" prefWidth="90" text="Hora" />
+                        <TableColumn fx:id="serviceColumn" prefWidth="170" text="Servicio" />
+                        <TableColumn fx:id="statusColumn" prefWidth="140" text="Estado" />
+                    </columns>
+                </TableView>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>
