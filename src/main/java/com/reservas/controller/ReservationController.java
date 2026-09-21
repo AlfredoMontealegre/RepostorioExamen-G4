@@ -12,7 +12,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.collections.FXCollections;
 
 import com.reservas.service.ReservationService;
 
@@ -31,16 +30,17 @@ public class ReservationController {
     @FXML private TextField searchField;
     @FXML private Label messageLabel;
 
-    @FXML private TableView<?> reservationTable;
-    @FXML private TableColumn<?, ?> idColumn;
-    @FXML private TableColumn<?, ?> clientColumn;
-    @FXML private TableColumn<?, ?> dateColumn;
-    @FXML private TableColumn<?, ?> timeColumn;
-    @FXML private TableColumn<?, ?> serviceColumn;
-    @FXML private TableColumn<?, ?> statusColumn;
+    @FXML private TableView<Reservation> reservationTable;
+    @FXML private TableColumn<Reservation, Long> idColumn;
+    @FXML private TableColumn<Reservation, String> clientColumn;
+    @FXML private TableColumn<Reservation, LocalDate> dateColumn;
+    @FXML private TableColumn<Reservation, String> timeColumn;
+    @FXML private TableColumn<Reservation, ServiceType> serviceColumn;
+    @FXML private TableColumn<Reservation, ReservationStatus> statusColumn;
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private final ReservationService reservationService = new ReservationService();
+    private Long selectedReservationId;
 
     @FXML
     private void initialize() {
@@ -50,22 +50,49 @@ public class ReservationController {
         datePicker.setValue(LocalDate.now());
         configureTable();
         reservationTable.setItems(reservationService.getReservations());
+        reservationTable.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> loadSelectedReservation(newValue));
         messageLabel.setText("");
     }
 
     @FXML
     public void handleSave(ActionEvent event) {
-        messageLabel.setText("Validación pendiente de completar en la siguiente parte.");
+        if (!validateForm()) {
+            return;
+        }
+
+        reservationService.add(reservationFromForm(null));
+        reservationTable.refresh();
+        clearForm();
+        messageLabel.setText("Reserva guardada correctamente.");
     }
 
     @FXML
     public void handleUpdate(ActionEvent event) {
-        messageLabel.setText("Seleccione una reserva para actualizar.");
+        if (selectedReservationId == null) {
+            messageLabel.setText("Seleccione una reserva de la tabla para actualizar.");
+            return;
+        }
+
+        if (!validateForm()) {
+            return;
+        }
+
+        reservationService.update(reservationFromForm(selectedReservationId));
+        reservationTable.refresh();
+        messageLabel.setText("Reserva actualizada correctamente.");
     }
 
     @FXML
     public void handleDelete(ActionEvent event) {
-        messageLabel.setText("Seleccione una reserva para eliminar.");
+        if (selectedReservationId == null) {
+            messageLabel.setText("Seleccione una reserva de la tabla para eliminar.");
+            return;
+        }
+
+        reservationService.delete(selectedReservationId);
+        clearForm();
+        reservationTable.getSelectionModel().clearSelection();
+        messageLabel.setText("Reserva eliminada correctamente.");
     }
 
     @FXML
@@ -146,7 +173,23 @@ public class ReservationController {
         return true;
     }
 
+    private void loadSelectedReservation(Reservation reservation) {
+        if (reservation == null) {
+            selectedReservationId = null;
+            return;
+        }
+
+        selectedReservationId = reservation.getId();
+        clientField.setText(reservation.getClient());
+        datePicker.setValue(reservation.getDate());
+        timeField.setText(reservation.getTime());
+        serviceComboBox.setValue(reservation.getService());
+        statusComboBox.setValue(reservation.getStatus());
+        messageLabel.setText("Reserva #" + reservation.getId() + " seleccionada.");
+    }
+
     private void clearForm() {
+        selectedReservationId = null;
         clientField.clear();
         datePicker.setValue(LocalDate.now());
         timeField.clear();
